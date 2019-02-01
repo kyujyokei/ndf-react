@@ -1,15 +1,14 @@
-// import * as p5 from 'p5'
-// import "p5/lib/addons/p5.dom";
 import "react-p5-wrapper/node_modules/p5/lib/addons/p5.dom";
 import ml5 from 'ml5';
 
+let timesClicked = 0;
+
 let mobileNet;
 let video;
-let label='model loading...';
+export let label='model loading...';
 
 function sketch (p) {
     
-  
     p.setup = function () {
         p.createCanvas(1000, 1000);
         //imitialize the webcam stream in a object
@@ -27,6 +26,17 @@ function sketch (p) {
         p.fill(255,140,0);
         p.text(label,10,450);
     };
+
+    p.myCustomRedrawAccordingToNewPropsHandler = function(newProps){
+        if(newProps.getCoords){
+            p.sendCoords = newProps.getCoords;
+        }
+    }
+
+    p.mouseClicked = function() {
+        p.sendCoords(p.mouseX, p.mouseY);
+        timesClicked++;
+    }
 };
 
 function ModelLoaded()
@@ -35,7 +45,6 @@ function ModelLoaded()
     //predicting the image
     mobileNet.predict(result)
 }
-
 
 //callback function to get the results
 function result(err,res)
@@ -47,10 +56,8 @@ function result(err,res)
         console.error(err)
     }
     else{
-       
         //get the label from the json result
         label = res[0].className;
-       
     //predicting the image again
          mobileNet.predict(result)
     }
