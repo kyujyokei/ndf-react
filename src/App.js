@@ -12,13 +12,17 @@ function getCoords(){
 
 class App extends Component {
 
-  componentDidMount(){
+  state = {
+    object_label: null
+  }
 
+  componentDidMount(){
+    this.interval = setInterval(() => this.setState({ object_label: label }), 500);
   }
   render() {
     return (
       <div className="App">
-
+        <p>{this.state.object_label}</p>
         <P5Wrapper sketch={sketch} getCoords={getCoords}/>
       </div>
     );
@@ -27,8 +31,8 @@ class App extends Component {
 
 export default App;
 
-document.body.onkeyup = function(e){
-  if(e.keyCode == 32){
-      console.log(label);
-  }
-}
+// document.body.onkeyup = function(e){
+//   if(e.keyCode == 32){
+//       console.log(label);
+//   }
+// }
