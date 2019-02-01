@@ -10,7 +10,7 @@ export let label='model loading...';
 function sketch (p) {
     
     p.setup = function () {
-        p.createCanvas(1000, 1000);
+        p.createCanvas(500, 500);
         //imitialize the webcam stream in a object
         video = p.createCapture(p.VIDEO);
         //hide the webcam stream
@@ -24,7 +24,7 @@ function sketch (p) {
         p.image(video,0,0);
         p.textSize(16);
         p.fill(255,140,0);
-        p.text(label,10,450);
+        p.text(label,10,300);
     };
 
     p.myCustomRedrawAccordingToNewPropsHandler = function(newProps){
