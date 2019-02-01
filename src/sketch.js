@@ -13,6 +13,7 @@ function sketch (p) {
         p.createCanvas(500, 500);
         //imitialize the webcam stream in a object
         video = p.createCapture(p.VIDEO);
+        video.elt.setAttribute('playsinline', '');
         //hide the webcam stream
         video.hide();
 
