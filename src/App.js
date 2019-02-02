@@ -1,75 +1,46 @@
 import React, { Component } from 'react';
-import Webcam from "react-webcam";
+import Webcam from './Webcam';
 import * as ml5 from 'ml5';
 import './App.css';
 
 
 class App extends Component {
+  video = <video id="video" width="640" height="480" autoplay></video>;
 
   state = {
-    predictions: null,
-    img: null
+    result : null
   }
 
-  classifyImg = () => {
-    // Initialize the Image Classifier method with MobileNet
-    const classifier = ml5.imageClassifier('MobileNet', modelLoaded);
-    // When the model is loaded
-    function modelLoaded() {
-      console.log('Model Loaded!');
-    }
-    // Put the image to classify inside a variable
-    // const image = document.getElementById('image');
-    let image = this.state.img;
-    // Make a prediction with a selected image
-    classifier.predict(image, 5, function(err, results) {
-      // print the result in the console
-      console.log(results);
-    })
+  loop = (classifier) => {
+    classifier.predict()
+      .then(results => {
+        this.setState({result: results[0].className});
+        // probability.innerText = results[0].probability.toFixed(4);
+        this.loop(classifier) // Call again to create a loop
+      })
   }
-
-  setRef = webcam => {
-    this.webcam = webcam;
-  };
-
-  capture = () => {
-    const imageSrc = this.webcam.getScreenshot();
-    this.setState({img: imageSrc});
-    console.log(this.state.img)
-    if (this.state.img) {
-      this.classifyImg(this.state.img);
-    }
-  };
- 
+  
 
   componentDidMount(){
-    // this.capture();
-    // let imageSrc = this.webcam.getScreenshot();
-    // this.setState({img: imageSrc})
-    // console.log(this.state.img)
-    // this.classifyImg(imageSrc);
+    ml5.imageClassifier('MobileNet', this.video)
+      .then(classifier => this.loop(classifier))
 
   }
   render() {
 
-    const videoConstraints = {
-      width: 300,
-      height: 300,
-      facingMode: "user"
-    };
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        this.video.srcObject = stream;
+        this.video.play();
+      })
 
+    
+  
     return (
       <div className="App">
-        <Webcam
-          audio={false}
-          height={300}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={300}
-          videoConstraints={videoConstraints}
-        />
+        {this.video}
         
-        <button onClick={this.capture}>Capture photo</button>
+      
       </div>
     );
   }
