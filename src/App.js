@@ -11,7 +11,7 @@ class App extends Component {
     img: null
   }
 
-  classifyImg = (image) => {
+  classifyImg = () => {
     // Initialize the Image Classifier method with MobileNet
     const classifier = ml5.imageClassifier('MobileNet', modelLoaded);
     // When the model is loaded
@@ -20,6 +20,7 @@ class App extends Component {
     }
     // Put the image to classify inside a variable
     // const image = document.getElementById('image');
+    let image = this.state.img;
     // Make a prediction with a selected image
     classifier.predict(image, 5, function(err, results) {
       // print the result in the console
@@ -30,13 +31,22 @@ class App extends Component {
   setRef = webcam => {
     this.webcam = webcam;
   };
+
+  capture = () => {
+    const imageSrc = this.webcam.getScreenshot();
+    this.setState({img: imageSrc});
+    console.log(this.state.img)
+    if (this.state.img) {
+      this.classifyImg(this.state.img);
+    }
+  };
  
 
   componentDidMount(){
     // this.capture();
-    let imageSrc = this.webcam.getScreenshot();
-    this.setState({img: imageSrc})
-    console.log(this.state.img)
+    // let imageSrc = this.webcam.getScreenshot();
+    // this.setState({img: imageSrc})
+    // console.log(this.state.img)
     // this.classifyImg(imageSrc);
 
   }
@@ -59,7 +69,7 @@ class App extends Component {
           videoConstraints={videoConstraints}
         />
         
-        {/* <button onClick={this.capture}>Capture photo</button> */}
+        <button onClick={this.capture}>Capture photo</button>
       </div>
     );
   }
