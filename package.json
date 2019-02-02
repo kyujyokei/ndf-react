@@ -46,6 +46,7 @@
     "react-dev-utils": "^7.0.1",
     "react-dom": "^16.7.0",
     "react-p5-wrapper": "0.0.4",
+    "react-webcam": "^1.1.0",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",

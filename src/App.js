@@ -1,38 +1,68 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
+import Webcam from "react-webcam";
+import * as ml5 from 'ml5';
 import './App.css';
-import sketch from './sketch';
-import P5Wrapper from 'react-p5-wrapper';
 
-import {label} from './sketch';
-
-function getCoords(){
-  console.log(arguments);
-}
 
 class App extends Component {
 
   state = {
-    object_label: null
+    predictions: null,
+    img: null
   }
 
+  classifyImg = (image) => {
+    // Initialize the Image Classifier method with MobileNet
+    const classifier = ml5.imageClassifier('MobileNet', modelLoaded);
+    // When the model is loaded
+    function modelLoaded() {
+      console.log('Model Loaded!');
+    }
+    // Put the image to classify inside a variable
+    // const image = document.getElementById('image');
+    // Make a prediction with a selected image
+    classifier.predict(image, 5, function(err, results) {
+      // print the result in the console
+      console.log(results);
+    })
+  }
+
+  setRef = webcam => {
+    this.webcam = webcam;
+  };
+ 
+
   componentDidMount(){
-    this.interval = setInterval(() => this.setState({ object_label: label }), 500);
+    // this.capture();
+    let imageSrc = this.webcam.getScreenshot();
+    this.setState({img: imageSrc})
+    console.log(this.state.img)
+    // this.classifyImg(imageSrc);
+
   }
   render() {
+
+    const videoConstraints = {
+      width: 300,
+      height: 300,
+      facingMode: "user"
+    };
+
     return (
       <div className="App">
-        <p>{this.state.object_label}</p>
-        <P5Wrapper sketch={sketch} getCoords={getCoords}/>
+        <Webcam
+          audio={false}
+          height={300}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={300}
+          videoConstraints={videoConstraints}
+        />
+        
+        {/* <button onClick={this.capture}>Capture photo</button> */}
       </div>
     );
   }
 }
 
 export default App;
-
-// document.body.onkeyup = function(e){
-//   if(e.keyCode == 32){
-//       console.log(label);
-//   }
-// }
