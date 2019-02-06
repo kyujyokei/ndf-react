@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import * as ml5 from 'ml5';
 import './App.css';
-import Webcam from 'react-webcam';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 class App extends Component {
   video = React.createRef();
 
   state = {
-    result :null
+    result :null,
+    prob: null
   }
 
   loop = (classifier) => {
     classifier.predict()
       .then(results => {
-        this.setState({result: results[0].className});
-        // console.log(results[0].className);
+        this.setState({result: results[0].className, prob: results[0].probability});
+        // console.log(results);
         this.loop(classifier) // Call again to create a loop
       })
   }
@@ -33,16 +35,21 @@ class App extends Component {
 
   }
   render() {
+
+    let loading = <CircularProgress color="secondary" />;
   
+
     return (
       <div className="App">
+        <div></div>
+        {this.state.result ? null : loading}
         <video ref={ this.video } 
-             id="video" 
-             width="640" 
-             height="480" 
-             autoPlay
-      />
-      <p>{this.state.result}</p>
+                  id="video" 
+                  width="640" 
+                  height="480" 
+                  autoPlay
+                />
+      <p>{this.state.result ? this.state.result + ',' + this.state.prob : 'Model Loading...'}</p>
       </div>
     );
   }
