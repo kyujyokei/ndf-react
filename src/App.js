@@ -16,7 +16,6 @@ class App extends Component {
     classifier.predict()
       .then(results => {
         this.setState({result: results[0].className, prob: results[0].probability});
-        // console.log(results);
         this.loop(classifier) // Call again to create a loop
       })
   }
@@ -58,33 +57,16 @@ class App extends Component {
     
 
     return (
-      <div>
-
-        {this.state.result ? null : <Spin />}
-        {/* <Button type="primary" onClick={this.showModal}>
-          Open Modal
-        </Button>
-        <Modal
-          title="Basic Modal"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal> */}
-        
+      <div>        
         <video ref={ this.video } 
                   id="video" 
                   width="640" 
                   height="480" 
                   autoPlay
-                  // className={classes.Video}
                 />
-        {/* <div className={classes.Contents}> */}
+
         <div>
-          <p>{this.state.result ? this.state.result + ',' + this.state.prob : <Spin />}</p>
+          <p>{this.state.result ? this.state.result + ',' + this.state.prob : <Spin tip="Loading..."/>}</p>
         </div>
         
       </div>
