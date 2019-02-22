@@ -23,8 +23,8 @@ class App extends Component {
       water:{
         title: 'Water',
         keyword:'water',
-        description:'At least 3 days of water',
-        found: false
+        description:'14 gallons for each person in your household',
+        found: true
       },
       food:{
         title:'Canned food',
