@@ -14,17 +14,17 @@ class App extends Component {
     visible: false,
     keywords:[],
     list: {
-      abaya:{
-        title: 'Abaya',
-        keyword: 'abaya',
-        description: 'For testing purpose only',
-        found: false
-      },
+      // abaya:{
+      //   title: 'Abaya',
+      //   keyword: 'abaya',
+      //   description: 'For testing purpose only',
+      //   found: false
+      // },
       water:{
         title: 'Water',
         keyword:'water',
         description:'14 gallons for each person in your household',
-        found: true
+        found: false
       },
       food:{
         title:'Canned food',
@@ -46,7 +46,7 @@ class App extends Component {
       },
       batteries: {
         title:'Batteries',
-        keyword:'battery',
+        keyword:'bookshop',
         description: '',
         found: false
       }
