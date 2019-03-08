@@ -157,8 +157,6 @@ class App extends Component {
       <div>        
         <video ref={ this.video } 
                   id="video" 
-                  width="640" 
-                  height="480" 
                   autoPlay
                 />
 
