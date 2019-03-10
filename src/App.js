@@ -61,8 +61,16 @@ class App extends Component {
       })
   }
 
+  
+
   componentDidMount(){
-    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+
+  const constraints = {
+      advanced: [{
+          facingMode: "environment"
+      }]
+  };
+    navigator.mediaDevices.getUserMedia({ video: constraints }).then(stream => {
       if (this.video.current) {
         this.video.current.srcObject = stream;
         this.video.current.play();
