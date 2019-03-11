@@ -8,6 +8,7 @@
     "p5": "^0.7.3",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-joyride": "^2.0.5",
     "react-p5-wrapper": "0.0.4",
     "react-scripts": "2.1.3"
   },

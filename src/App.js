@@ -3,11 +3,13 @@ import * as ml5 from 'ml5';
 import './App.css';
 import { Modal, Button, Spin } from 'antd';
 import ItemRow from './components/ItemRow/ItemRow';
+import ReactJoyride, { STATUS } from 'react-joyride';
 
 class App extends Component {
   video = React.createRef();
 
   state = {
+    showWelcome: true,
     completed: false,
     result :null,
     loaded: false,
@@ -39,7 +41,22 @@ class App extends Component {
         description: 'For testing purposes',
         found: false
       }
-    }
+    },
+    steps: [
+      {
+          content: 'Let\'s prepare the stuff you\'ll need as an emergency pack to survive thorugh natural disasters',
+          placement: 'center',
+          title:<h4>Welcome!!!</h4>,
+          locale: { skip: <strong aria-label="skip">SKIP</strong> },
+          target: 'body',
+      },
+      {
+        content: 'Once in a grocery store, try to find the items in the list and grab what\'s required.',
+        placement: 'center',
+        title:<h4>Start shopping!!!</h4>,
+        target: 'body',
+      }
+    ]
   }
 
   loop = (classifier) => {
@@ -107,7 +124,7 @@ class App extends Component {
 
   checkResultsHandler () {
     var found = this.state.keywords.find(element => {
-      return element  == this.state.result;
+      return element  === this.state.result;
     });
 
     if (found) {
@@ -192,7 +209,21 @@ class App extends Component {
     }
 
     return (
-      <div>        
+      <div>     
+        <ReactJoyride
+                    callback={this.handleJoyrideCallback}
+                    continuous
+                    run={this.state.run}
+                    scrollToFirstStep
+                    showProgress
+                    showSkipButton
+                    steps={this.state.steps}
+                    styles={{
+                        options: {
+                        zIndex: 10000,
+                        }
+                    }}
+                    />   
         <video ref={ this.video } 
                   id="video" 
                   width="400" 
@@ -201,18 +232,21 @@ class App extends Component {
                 />
 
         <div>
+        
           {this.state.completed ? <p>DONE!!!</p> : null}
           <Modal
-            title="Basic Modal"
+            title="Yay!!!"
             visible={this.state.completed}
             onOk={this.handleOk}
             onCancel={this.handleCancel}
             >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+
+            <h3>You've collected all the supplies</h3>
+            <p>Check out more life saving tips: </p>
+            <a href="https://www.usa.gov/prepare-for-disasters">Emergency and Disaster Preparedness | USA Gov</a> <br/>
+            <a href="https://www.nationwide.com/catastrophe-preparation.jsp">Disaster and recovery preparation | Nationwide</a>
           </Modal>
-          {this.state.result ? this.state.result + ',' + this.state.prob : <Spin tip="Loading..."/>}
+          {this.state.result ? <p>I see... <b>{this.state.result}</b>, with {this.state.prob * 1000 / 10} % of certainty</p> : <Spin tip="Loading..."/>}
         </div>
 
         {list}

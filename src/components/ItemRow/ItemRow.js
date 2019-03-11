@@ -9,7 +9,7 @@ const ItemRow = (props) => {
         <Col span={2}>
         </Col>
         <Col span={2} className={classes.CheckBox}>
-            {props.found ? <p className={classes.Check}> V </p> : <p>?</p>}
+            {props.found ? <p className={classes.Check}> V </p> : <p>□</p>}
         </Col>
         
         <Col span={20}>
