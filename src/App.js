@@ -8,46 +8,35 @@ class App extends Component {
   video = React.createRef();
 
   state = {
+    completed: false,
     result :null,
     loaded: false,
     prob: null,
     visible: false,
     keywords:[],
     list: {
-      // abaya:{
-      //   title: 'Abaya',
-      //   keyword: 'abaya',
-      //   description: 'For testing purpose only',
-      //   found: false
-      // },
-      water:{
+      water_bottle:{
         title: 'Water',
-        keyword:'water',
+        keyword:'water_bottle',
         description:'14 gallons for each person in your household',
         found: false
       },
-      food:{
+      can_opener:{
         title:'Canned food',
-        keyword:'can',
-        description:'',
+        keyword:'can_opener',
+        description:'Get aroung 42 cans for per person in your household',
         found: false
       },
-      flashlight:{
-        title: 'Flashlight',
-        keyword:'flash light',
-        description:'',
-        found: false
-      },
-      bandAid:{
-        title: 'Band Aid',
-        keyword:'band aid',
-        description:'',
-        found: false
-      },
-      batteries: {
+      rubber_eraser: {
         title:'Batteries',
-        keyword:'bookshop',
-        description: '',
+        keyword:'rubber_eraser',
+        description: 'For your electronics',
+        found: false
+      },
+      banana: {
+        title: 'Banana (for testing purpose)',
+        keyword: 'banana',
+        description: 'For testing purposes',
         found: false
       }
     }
@@ -56,7 +45,10 @@ class App extends Component {
   loop = (classifier) => {
     classifier.predict()
       .then(results => {
-        this.setState({result: results[0].className, prob: results[0].probability});
+        if (results[0].probability > 0.45){
+          this.setState({result: results[0].className.replace(" ","_").split(",")[0], prob: results[0].probability});
+        }
+        
         this.loop(classifier) // Call again to create a loop
       })
   }
@@ -113,6 +105,61 @@ class App extends Component {
     });
   }
 
+  checkResultsHandler () {
+    var found = this.state.keywords.find(element => {
+      return element  == this.state.result;
+    });
+
+    if (found) {
+      console.log("Found:", found);
+      let currentList = this.state.list;
+      let updatedList = {
+        ...currentList,
+        [found]:{
+          ...currentList[found],
+          found: true
+        }
+      }
+
+      let currentKeywords = Array.from(this.state.keywords);
+      let index = currentKeywords.indexOf(found);
+      currentKeywords.splice(index, 1);
+      
+      this.setState({list: updatedList, keywords: currentKeywords}, () => {
+        this.checkCompleteHandler();
+      });
+      
+    }
+  }
+
+  checkCompleteHandler () {
+    let formIsValid = true;
+    
+        for (let inputIdentifier in this.state.list) {
+            formIsValid = this.state.list[inputIdentifier].found && formIsValid;
+        }
+
+        console.log('formIsValid:', formIsValid);
+        // return formIsValid;
+        if (formIsValid) {
+          this.setState({completed: true})
+        }
+  }
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      completed: false,
+    });
+  }
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      completed: false,
+    });
+  }
+
   render() {
 
     let list = <p>This place for list</p>;
@@ -135,29 +182,12 @@ class App extends Component {
       );
     });
 
+    let isComplete = false;
+
     if (this.state.loaded) {
-      var found = this.state.keywords.find(element => {
-        return element  == this.state.result;
-      });
-
-      if (found) {
-        console.log("Found:", found);
-        let currentList = this.state.list;
-        let updatedList = {
-          ...currentList,
-          [found]:{
-            ...currentList[found],
-            found: true
-          }
-        }
-
-        let currentKeywords = Array.from(this.state.keywords);
-        let index = currentKeywords.indexOf(found);
-        console.log('curr key:', currentKeywords, found, index)
-        currentKeywords.splice(index, 1);
-        console.log('updated key:', currentKeywords)
-        this.setState({list: updatedList, keywords: currentKeywords});
-
+      isComplete = this.checkResultsHandler();
+      if (isComplete){
+        this.setState({completed: true})
       }
     }
 
@@ -171,6 +201,17 @@ class App extends Component {
                 />
 
         <div>
+          {this.state.completed ? <p>DONE!!!</p> : null}
+          <Modal
+            title="Basic Modal"
+            visible={this.state.completed}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
           {this.state.result ? this.state.result + ',' + this.state.prob : <Spin tip="Loading..."/>}
         </div>
 
